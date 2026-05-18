@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Products List Schema",
+  "type": "object",
+  "required": ["quantidade", "produtos"],
+  "properties": {
+    "quantidade": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total de produtos retornados"
+    },
+    "produtos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["nome", "preco", "descricao", "quantidade", "_id"],
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 1
+          },
+          "preco": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "descricao": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quantidade": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

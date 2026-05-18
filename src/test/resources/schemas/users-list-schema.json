@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Users List Schema",
+  "type": "object",
+  "required": ["quantidade", "usuarios"],
+  "properties": {
+    "quantidade": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total de usuários retornados"
+    },
+    "usuarios": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["nome", "email", "password", "administrador", "_id"],
+        "properties": {
+          "nome": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1
+          },
+          "administrador": {
+            "type": "string",
+            "enum": ["true", "false"]
+          },
+          "_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
