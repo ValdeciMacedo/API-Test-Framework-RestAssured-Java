@@ -2,32 +2,16 @@ name: API Tests - CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
   schedule:
-    # Execução diária às 6h (regressão completa)
     - cron: '0 6 * * *'
 
 jobs:
   api-tests:
     name: Run API Test Suite
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:15-alpine
-        env:
-          POSTGRES_DB: servetest_db
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
       - name: 📥 Checkout do código
@@ -40,16 +24,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: 🗄️ Inicializar banco de dados
-        run: |
-          PGPASSWORD=postgres psql -h localhost -U postgres -d servetest_db -f docker/init.sql
-
       - name: 🧪 Executar testes
         env:
           BASE_URL: https://serverest.dev
-          DB_URL: jdbc:postgresql://localhost:5432/servetest_db
-          DB_USER: postgres
-          DB_PASSWORD: postgres
         run: mvn clean test -Dbase.url=$BASE_URL
 
       - name: 📊 Gerar relatório Allure
@@ -65,7 +42,7 @@ jobs:
           retention-days: 30
 
       - name: 🌐 Deploy do relatório no GitHub Pages
-        if: github.ref == 'refs/heads/main' && always()
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
